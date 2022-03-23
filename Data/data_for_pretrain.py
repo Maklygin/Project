@@ -85,5 +85,9 @@ class data_for_pretrain:
         if language_name is None:
             self.raw = pd.read_csv(path,sep = '\t',index_col=[0])
 
+    def sentence_uploading(self,language_name,id_and_sent):
+        data = self.dict_fill(id_and_sent)
+        df1 = pd.DataFrame(columns=self.raw.columns, data=data, index=[0])
+        self.raw = pd.concat([self.data[self.languages[language_name]], df1], ignore_index=True)
 
 
