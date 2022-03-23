@@ -79,11 +79,13 @@ class data_for_pretrain:
         if language_name is None:
             self.raw.to_csv('source.tsv', sep="\t")
         else:
-            self.data[self.languages[language_name]].to_csv('data_for_pretrain'+language_name+'.tsv', sep="\t")
+            self.data[self.languages[language_name]].to_csv('data_for_pretrain_'+language_name+'.tsv', sep="\t")
 
     def upload(self,path,language_name=None):
         if language_name is None:
             self.raw = pd.read_csv(path,sep = '\t',index_col=[0])
+        else:
+            self.data[self.languages[language_name]] = pd.read_csv(path,sep = '\t',index_col=[0])
 
     def sentence_uploading(self,language_name,id_and_sent):
         data = self.dict_fill(id_and_sent)
