@@ -88,6 +88,7 @@ class data_for_pretrain:
     def sentence_uploading(self,language_name,id_and_sent):
         data = self.dict_fill(id_and_sent)
         df1 = pd.DataFrame(columns=self.raw.columns, data=data, index=[0])
-        self.data = pd.concat([self.data[self.languages[language_name]], df1], ignore_index=True)
+        self.data[self.languages[language_name]] = \
+            pd.concat([self.data[self.languages[language_name]], df1], ignore_index=True)
 
 
