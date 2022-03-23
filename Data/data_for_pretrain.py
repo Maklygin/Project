@@ -69,16 +69,21 @@ class data_for_pretrain:
             j += 1
         return dict_
 
-    def show(self, language_name=None, source=True):
+    def show(self, language_name=None):
         # возвращает датафрейм pandas
-        if source and language_name is None:
+        if language_name is None:
             return self.raw
         return self.data[self.languages[language_name]]
 
-    def save(self, language_name=None, source=True):
-        if source and language_name is None:
+    def save(self, language_name=None):
+        if language_name is None:
             self.raw.to_csv('source.tsv', sep="\t")
         else:
             self.data[self.languages[language_name]].to_csv('data_for_pretrain'+language_name+'.tsv', sep="\t")
+
+    def upload(self,path,language_name=None):
+        if language_name is None:
+            self.raw = pd.read_csv(path,sep = '\t',index_col=[0])
+
 
 
