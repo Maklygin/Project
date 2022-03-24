@@ -85,7 +85,9 @@ class data_for_pretrain:
 
     def upload(self,path,language_name=None):
         if language_name is None:
-            self.raw = pd.read_csv(path,sep = '\t',index_col=[0])
+            for i in path:
+                df1 = pd.read_csv(i,sep = '\t',index_col=[0])
+                self.raw = pd.concat([self.raw, df1], ignore_index=True)
         else:
             self.data[self.languages[language_name]] = pd.read_csv(path,sep = '\t',index_col=[0])
 

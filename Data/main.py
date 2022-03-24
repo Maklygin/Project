@@ -17,8 +17,7 @@ import ssl
 translator = Translator()
 obj = data_for_pretrain(['ru','zh-cn'])
 obj.set_columns()
-obj.upload('source.tsv')
-obj.save()
+obj.upload(['source1.tsv','source2.tsv'])
 # obj.upload(language_name='ru', path='data_for_pretrain_ru.tsv')
 # obj.upload(language_name='zh-cn', path='data_for_pretrain_zh-cn.tsv')
 
