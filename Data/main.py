@@ -9,14 +9,7 @@ import googletrans
 from googletrans import Translator
 import ssl
 
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    # Legacy Python that doesn't verify HTTPS certificates by default
-    pass
-else:
-    # Handle target environment that doesn't support HTTPS verification
-    ssl._create_default_https_context = _create_unverified_https_context
+
 
 
 #20873
@@ -25,25 +18,26 @@ translator = Translator()
 obj = data_for_pretrain(['ru','zh-cn'])
 obj.set_columns()
 obj.upload('source.tsv')
-obj.upload(language_name='ru',path='data_for_pretrainru.tsv')
-obj.upload(language_name='zh-cn',path='data_for_pretrainzh-cn.tsv')
-# print(obj.data[0].info)
+obj.save()
+# obj.upload(language_name='ru', path='data_for_pretrain_ru.tsv')
+# obj.upload(language_name='zh-cn', path='data_for_pretrain_zh-cn.tsv')
 
 
-text = obj.raw.values[20872,1]
-tranlated = translator.translate(text, dest='zh-cn')
-obj.sentence_uploading('zh-cn',[obj.raw.values[20872,0],tranlated.text])
 
-for i in tqdm(range(20873,99201)):
-    text = obj.raw.values[i,1]
-    tranlated = translator.translate(text, dest='ru')
-    obj.sentence_uploading('ru',[obj.raw.values[i,0],tranlated.text])
-
-    tranlated = translator.translate(text, dest='zh-cn')
-    obj.sentence_uploading('zh-cn', [obj.raw.values[i, 0], tranlated.text])
-
-obj.save(language_name='ru')
-obj.save(language_name='zh-cn')
+# text = obj.raw.values[20872,1]
+# tranlated = translator.translate(text, dest='zh-cn')
+# obj.sentence_uploading('zh-cn',[obj.raw.values[20872,0],tranlated.text])
+#
+# for i in tqdm(range(20873,99201)):
+#     text = obj.raw.values[i,1]
+#     tranlated = translator.translate(text, dest='ru')
+#     obj.sentence_uploading('ru',[obj.raw.values[i,0],tranlated.text])
+#
+#     tranlated = translator.translate(text, dest='zh-cn')
+#     obj.sentence_uploading('zh-cn', [obj.raw.values[i, 0], tranlated.text])
+#
+# obj.save(language_name='ru')
+# obj.save(language_name='zh-cn')
 
 #model = AutoModelForSeq2SeqLM.from_pretrained('Helsinki-NLP/opus-mt-en-ru')
 #tokenizer = AutoTokenizer.from_pretrained('Helsinki-NLP/opus-mt-en-ru')

@@ -77,7 +77,9 @@ class data_for_pretrain:
 
     def save(self, language_name=None):
         if language_name is None:
-            self.raw.to_csv('source.tsv', sep="\t")
+            length = int(len(self.raw)/2)
+            self.raw[:length].to_csv('source1.tsv', sep="\t")
+            self.raw[length:].to_csv('source2.tsv', sep="\t")
         else:
             self.data[self.languages[language_name]].to_csv('data_for_pretrain_'+language_name+'.tsv', sep="\t")
 
