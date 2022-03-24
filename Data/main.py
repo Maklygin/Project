@@ -1,16 +1,13 @@
-# from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import numpy as np
+import torch
 from data_for_pretrain import data_for_pretrain
 from tqdm import tqdm
-import googletrans
+import sentencepiece
 from googletrans import Translator
-import ssl
-
-
-
 
 #20873
 
@@ -18,10 +15,12 @@ translator = Translator()
 obj = data_for_pretrain(['ru','zh-cn'])
 obj.set_columns()
 obj.upload(['source1.tsv','source2.tsv'])
-# obj.upload(language_name='ru', path='data_for_pretrain_ru.tsv')
+obj.upload(language_name='ru', path='data_for_pretrain_ru.tsv')
 # obj.upload(language_name='zh-cn', path='data_for_pretrain_zh-cn.tsv')
+print(obj.data[0].values[0])
+print(obj.raw.values[0])
 
-
+print(obj.data[0].values[0,1].split('.',maxsplit=3))
 
 # text = obj.raw.values[20872,1]
 # tranlated = translator.translate(text, dest='zh-cn')
@@ -38,11 +37,11 @@ obj.upload(['source1.tsv','source2.tsv'])
 # obj.save(language_name='ru')
 # obj.save(language_name='zh-cn')
 
-#model = AutoModelForSeq2SeqLM.from_pretrained('Helsinki-NLP/opus-mt-en-ru')
-#tokenizer = AutoTokenizer.from_pretrained('Helsinki-NLP/opus-mt-en-ru')
-#batch = tokenizer([text], return_tensors="pt")
-#generated_ids = model.generate(**batch)
-#print(tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0])
+# model = AutoModelForSeq2SeqLM.from_pretrained('Helsinki-NLP/opus-mt-en-ru')
+# tokenizer = AutoTokenizer.from_pretrained('Helsinki-NLP/opus-mt-en-ru')
+# batch = tokenizer(obj.raw.values[0,1].split('.',maxsplit=3), return_tensors="pt",padding=True)
+# generated_ids = model.generate(**batch)
+# print(tokenizer.batch_decode(generated_ids, skip_special_tokens=True))
 
 # url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=%22gene%22AND%22protein%22&retmax' \
 #       '=100000&usehistory=y '
