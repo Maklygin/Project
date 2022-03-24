@@ -11,17 +11,19 @@ from googletrans import Translator
 
 #20873
 
-translator = Translator()
+
 obj = data_for_pretrain(['ru','zh-cn'])
 obj.set_columns()
 obj.upload(['source1.tsv','source2.tsv'])
-obj.upload(language_name='ru', path='data_for_pretrain_ru.tsv')
-# obj.upload(language_name='zh-cn', path='data_for_pretrain_zh-cn.tsv')
-print(obj.data[0].values[0])
-print(obj.raw.values[0])
+obj.upload(language_name='zh-cn',path=[f'data_for_pretrain_zh-cn{i}.tsv' for i in range(1,4)])
+obj.upload(language_name='ru', path=[f'data_for_pretrain_ru{i}.tsv' for i in range(1,4)])
 
-print(obj.data[0].values[0,1].split('.',maxsplit=3))
+print(obj.data[0].info,obj.data[1].info)
 
+obj.save('ru')
+obj.save('zh-cn')
+
+# translator = Translator()
 # text = obj.raw.values[20872,1]
 # tranlated = translator.translate(text, dest='zh-cn')
 # obj.sentence_uploading('zh-cn',[obj.raw.values[20872,0],tranlated.text])

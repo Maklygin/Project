@@ -81,15 +81,20 @@ class data_for_pretrain:
             self.raw[:length].to_csv('source1.tsv', sep="\t")
             self.raw[length:].to_csv('source2.tsv', sep="\t")
         else:
-            self.data[self.languages[language_name]].to_csv('data_for_pretrain_'+language_name+'.tsv', sep="\t")
+            length = int(len(self.raw) / 3)
+            self.data[self.languages[language_name]][:length].to_csv('data_for_pretrain_'+language_name+'1'+'.tsv', sep="\t")
+            self.data[self.languages[language_name]][length:length*2].to_csv('data_for_pretrain_'+language_name+'2'+'.tsv', sep="\t")
+            self.data[self.languages[language_name]][2*length:].to_csv('data_for_pretrain_'+language_name+'3'+'.tsv', sep="\t")
 
     def upload(self,path,language_name=None):
-        if language_name is None:
-            for i in path:
+        for i in path:
+            if language_name is None:
                 df1 = pd.read_csv(i,sep = '\t',index_col=[0])
                 self.raw = pd.concat([self.raw, df1], ignore_index=True)
-        else:
-            self.data[self.languages[language_name]] = pd.read_csv(path,sep = '\t',index_col=[0])
+            else:
+                df1 = pd.read_csv(i, sep='\t', index_col=[0])
+                self.data[self.languages[language_name]] = pd.concat([self.data[self.languages[language_name]], df1], ignore_index=True)
+
 
     def sentence_uploading(self,language_name,id_and_sent):
         data = self.dict_fill(id_and_sent)
