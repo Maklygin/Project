@@ -19,18 +19,18 @@ obj.upload(language_name='ru', path=[f'data_for_pretrain_ru{i}.tsv' for i in ran
 
 print(obj.data[0].info,obj.data[1].info)
 
-translator = Translator()
-
-for i in tqdm(range(95001,99201)):
-    text = obj.raw.values[i,1]
-    tranlated = translator.translate(text, dest='ru')
-    obj.sentence_uploading('ru',[obj.raw.values[i,0],tranlated.text])
-
-    tranlated = translator.translate(text, dest='zh-cn')
-    obj.sentence_uploading('zh-cn', [obj.raw.values[i, 0], tranlated.text])
-
-obj.save(language_name='ru')
-obj.save(language_name='zh-cn')
+# translator = Translator()
+#
+# for i in tqdm(range(95001,99201)):
+#     text = obj.raw.values[i,1]
+#     tranlated = translator.translate(text, dest='ru')
+#     obj.sentence_uploading('ru',[obj.raw.values[i,0],tranlated.text])
+#
+#     tranlated = translator.translate(text, dest='zh-cn')
+#     obj.sentence_uploading('zh-cn', [obj.raw.values[i, 0], tranlated.text])
+#
+# obj.save(language_name='ru')
+# obj.save(language_name='zh-cn')
 
 # model = AutoModelForSeq2SeqLM.from_pretrained('Helsinki-NLP/opus-mt-en-ru')
 # tokenizer = AutoTokenizer.from_pretrained('Helsinki-NLP/opus-mt-en-ru')
