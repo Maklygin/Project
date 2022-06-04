@@ -28,16 +28,22 @@ if __name__ == '__main__':
     train_data = TensorDataset(convert_list_to_torch(model_input_list))
     train_dataloader = DataLoader(train_data, sampler=RandomSampler(train_data), batch_size=batch_size)
 
-    optimizer = AdamW(model.parameters(), lr=lr, correct_bias=False)
+    optimizer = AdamW(model.parameters(), lr=lr)
     model.train()
     for i in tqdm(range(num_epoch)):
         for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
             batch = tuple(t.to(device) for t in batch)
 
+            optimizer.zero_grad()
             title_ids, title_mask, title_segment, input_ids, input_mask, \
-            segment_ids, P_gauss1_list, P_gauss2_list, label_ids = batch
+                segment_ids, P_gauss1_list, P_gauss2_list, label_ids = batch
 
             logits = model(title_ids, title_segment, title_mask, input_ids, segment_ids,
                            input_mask, P_gauss1_list, P_gauss2_list, labels=None)
+
             loss_fct = CrossEntropyLoss()
             loss = loss_fct(logits.view(-1, num_labels), label_ids.view(-1))
+
+            loss.backward()
+            optimizer.step()
+
