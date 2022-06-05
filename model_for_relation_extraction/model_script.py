@@ -10,14 +10,14 @@ import numpy as np
 
 class BertForSequenceClassification(BertPreTrainedModel):
     def __init__(self, config):
-        super().__init__(config)
-        self.num_labels = self.num_labels
+        super(BertForSequenceClassification,self).__init__(config)
+        self.num_labels = 6
         self.bert = BertModel(config)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         # self.activation = nn.ReLU
         self.activation_final = nn.Tanh()
         self.classifier = nn.Linear(4 * config.hidden_size, self.num_labels)
-        self.apply(self.init_bert_weights)
+        # self.apply(self.init_bert_weights)
 
     def forward(self, title_ids, title_type_ids=None, title_mask=None, input_ids=None, token_type_ids=None,
                 attention_mask=None, P_gauss1_bs=None, P_gauss2_bs=None, labels=None):
@@ -71,7 +71,6 @@ def convert_tsv_to_model_input(path, tokenizer, max_seq_length):
     title_list, article_list, label_list = [df.values[:, i] for i in [1, 2, 3]]
 
     label_map = {'false': 0, 'CPR:3': 1, 'CPR:4': 2, 'CPR:5': 3, 'CPR:6': 4, 'CPR:9': 5}
-    print(label_map)
 
     for i in range(len(title_list)):
 
@@ -92,7 +91,11 @@ def convert_tsv_to_model_input(path, tokenizer, max_seq_length):
             gene_index = article.index('@', first_at + 1)
         else:
             gene_index = first_at
-            chem_index = article.index('@', first_at + 1)
+            try:
+                chem_index = article.index('@', first_at + 1)
+            except:
+                print(article)
+                print(df.values[:,0][i])
 
         # Первое гауссово распредление относится к chem, а второе к gene
         P_gauss1_array = np.zeros(max_seq_length)
