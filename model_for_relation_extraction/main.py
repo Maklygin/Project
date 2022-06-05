@@ -10,7 +10,7 @@ from model_script import convert_tsv_to_model_input, convert_list_to_torch
 
 if __name__ == '__main__':
     num_labels = 6
-    max_seq_length = 256
+    max_seq_length = 512
     batch_size = 16
     num_epoch = 1
     lr = 2.5e-5
@@ -23,9 +23,11 @@ if __name__ == '__main__':
 
     df = pd.read_csv('train_en.tsv', index_col=False)
 
-    model_input_list = convert_tsv_to_model_input('train_en.tsv', tokenizer=tokenizer, max_seq_length=256)
-
-    train_data = TensorDataset(convert_list_to_torch(model_input_list))
+    model_input_list = convert_tsv_to_model_input('train_en.tsv', tokenizer=tokenizer,
+                                                  max_seq_length=max_seq_length)
+    a = torch.tensor([model_input_list[0][0],model_input_list[0][0]],dtype=torch.long)
+    print(a,a[0],type(a),type(a[0]))
+    train_data = TensorDataset(*convert_list_to_torch(model_input_list))
     train_dataloader = DataLoader(train_data, sampler=RandomSampler(train_data), batch_size=batch_size)
 
     # optimizer = AdamW(model.parameters(), lr=lr)

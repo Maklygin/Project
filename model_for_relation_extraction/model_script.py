@@ -22,24 +22,24 @@ class BertForSequenceClassification(BertPreTrainedModel):
     def forward(self, title_ids, title_type_ids=None, title_mask=None, input_ids=None, token_type_ids=None,
                 attention_mask=None, P_gauss1_bs=None, P_gauss2_bs=None, labels=None):
 
-        input_token_output, pooled_output = self.bert(input_ids, token_type_ids, attention_mask,
-                                                      output_all_encoded_layers=False)
-        input_token_output = self.dropout(input_token_output)
-        # input_token_output = self.activation(input_token_output)
+        input_token_output_, pooled_output_ = self.bert(input_ids, token_type_ids, attention_mask)
+        input_token_output_ = self.dropout(input_token_output_)
 
-        _, title_output = self.bert(title_ids, title_type_ids, title_mask, output_all_encoded_layers=False)
+        # input_token_output_ = self.activation(input_token_output_)
+
+        _, title_output = self.bert(title_ids, title_type_ids, title_mask)
         title_query = title_output.unsqueeze(dim=1)
-        t_u = torch.matmul(title_query, input_token_output.transpose(-1, -2))
+        t_u = torch.matmul(title_query, input_token_output_.transpose(-1, -2))
         t_alpha = nn.Softmax(dim=-1)(t_u)
-        t_v = torch.matmul(t_alpha, input_token_output)
+        t_v = torch.matmul(t_alpha, input_token_output_)
         output_t = t_v.squeeze(dim=1)
         output_t = self.activation_final(output_t)
         output_t = self.dropout(output_t)
 
         P_gauss1_bs = P_gauss1_bs.unsqueeze(dim=1)
         P_gauss2_bs = P_gauss2_bs.unsqueeze(dim=1)
-        gauss_entity1 = torch.matmul(P_gauss1_bs, input_token_output)
-        gauss_entity2 = torch.matmul(P_gauss2_bs, input_token_output)
+        gauss_entity1 = torch.matmul(P_gauss1_bs, input_token_output_)
+        gauss_entity2 = torch.matmul(P_gauss2_bs, input_token_output_)
         gauss_entity1 = gauss_entity1.squeeze(dim=1)
         gauss_entity2 = gauss_entity2.squeeze(dim=1)
         gauss_entity1 = self.activation_final(gauss_entity1)
@@ -47,8 +47,8 @@ class BertForSequenceClassification(BertPreTrainedModel):
         gauss_entity1 = self.dropout(gauss_entity1)
         gauss_entity2 = self.dropout(gauss_entity2)
 
-        pooled_output = self.dropout(pooled_output)
-        output = torch.cat((output_t, pooled_output, gauss_entity1, gauss_entity2), -1)
+        pooled_output_ = self.dropout(pooled_output_)
+        output = torch.cat((output_t, pooled_output_, gauss_entity1, gauss_entity2), -1)
         output = self.dropout(output)
         logits = self.classifier(output)
 
@@ -94,7 +94,7 @@ def convert_tsv_to_model_input(path, tokenizer, max_seq_length):
             try:
                 chem_index = article.index('@', first_at + 1)
             except:
-                print(article)
+                print(article)          # Если отсутствует @CHEMICAL или @GENE
                 print(df.values[:,0][i])
 
         # Первое гауссово распредление относится к chem, а второе к gene
