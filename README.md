@@ -32,4 +32,8 @@
 
 <img src="https://github.com/Maklygin/Project/blob/main/model_.png" alt="arch" width="60%"/>
 
+### Результат
+Ниже приведены значения метрики F1 для каждого класса отношений и для каждого языка, на котором проводилось обучение. 
+<img src="https://github.com/Maklygin/Project/blob/main/Res.png" alt="result" width="50%"/>
+
 
